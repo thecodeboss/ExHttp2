@@ -3,7 +3,7 @@ defmodule ExHttp2.Response do
             content_length: 0, content_type: "text/html", body: ""
   use Timex
 
-  def ok(_request, body) do
+  def ok(body) do
     %ExHttp2.Response{code: 200,
                       reason: "OK",
                       time: get_current_time,

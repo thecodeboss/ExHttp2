@@ -14,8 +14,9 @@ defmodule ExHttp2.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
+    config = Mix.Config.read!("config/config.exs")
     [applications: [:logger],
-     mod: {ExHttp2, []}]
+     mod: {ExHttp2, config[:exhttp2]}]
   end
 
   # Dependencies can be Hex packages:

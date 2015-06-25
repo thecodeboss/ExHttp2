@@ -3,24 +3,28 @@ defmodule ExHttp2.Server do
   alias ExHttp2.Request
   alias ExHttp2.Response
 
-  def accept(port) do
+  def accept(config) do
+    port = config[:port]
     {:ok, socket} = :gen_tcp.listen(port,
                       [:binary, packet: :line, active: false, reuseaddr: true])
     IO.puts "Accepting HTTP connections on port #{port}"
-    loop_acceptor(socket)
+    loop_acceptor(socket, config)
   end
 
-  defp loop_acceptor(socket) do
+  defp loop_acceptor(socket, config) do
     {:ok, client} = :gen_tcp.accept(socket)
-    {:ok, pid} = Task.Supervisor.start_child(ExHttp2.Server.TaskSupervisor, fn -> serve(client) end)
+    {:ok, pid} = Task.Supervisor.start_child(ExHttp2.Server.TaskSupervisor, fn -> serve(client, config) end)
     :ok = :gen_tcp.controlling_process(client, pid)
-    loop_acceptor(socket)
+    loop_acceptor(socket, config)
   end
 
-  defp serve(socket) do
+  defp serve(socket, config) do
+    content_path = config[:content_path]
     socket
     |> Request.parse
-    |> Response.ok("<html><body><h1>Hello World</h1></body></html>")
+    |> Request.path(content_path)
+    |> File.read!
+    |> Response.ok
     |> Response.to_string
     |> write_line(socket)
   end

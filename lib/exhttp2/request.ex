@@ -12,6 +12,10 @@ defmodule ExHttp2.Request do
                      headers: headers}
   end
 
+  def path(request=%ExHttp2.Request{}, content_path) do
+    Path.join(content_path, request.path)
+  end
+
   defp read_headers(socket, acc \\ [])
 
   defp read_headers(_, ["\r\n" | acc]) do
