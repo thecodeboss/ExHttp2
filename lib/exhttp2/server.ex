@@ -20,7 +20,7 @@ defmodule ExHttp2.Server do
   defp serve(socket) do
     socket
     |> Request.parse
-    |> Response.ok
+    |> Response.ok("<html><body><h1>Hello World</h1></body></html>")
     |> Response.to_string
     |> write_line(socket)
   end
