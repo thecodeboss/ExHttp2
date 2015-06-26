@@ -2,6 +2,7 @@ defmodule ExHttp2.Server do
   use Timex
   alias ExHttp2.Request
   alias ExHttp2.Response
+  alias ExHttp2.Router
 
   def accept(config) do
     port = config[:port]
@@ -19,18 +20,20 @@ defmodule ExHttp2.Server do
   end
 
   defp serve(socket, config) do
-    content_path = config[:content_path]
     socket
     |> Request.parse
-    |> Request.path(content_path)
-    |> File.read!
-    |> Response.ok
+    |> Router.handle(config)
     |> Response.to_string
     |> write_line(socket)
   end
 
   def read_line(socket) do
     {:ok, data} = :gen_tcp.recv(socket, 0)
+    data
+  end
+
+  def read_bytes(socket, num_bytes) do
+    {:ok, data} = :gen_tcp.recv(socket, num_bytes)
     data
   end
 

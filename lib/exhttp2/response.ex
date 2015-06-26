@@ -4,11 +4,24 @@ defmodule ExHttp2.Response do
   use Timex
 
   def ok(body) do
+    %{ok | content_length: byte_size(body),
+           body: body}
+  end
+
+  def ok do
     %ExHttp2.Response{code: 200,
                       reason: "OK",
-                      time: get_current_time,
-                      content_length: byte_size(body),
-                      body: body}
+                      time: get_current_time}
+  end
+
+  def not_found do
+    %ExHttp2.Response{code: 404,
+                      reason: "Not found"}
+  end
+
+  def not_implemented do
+    %ExHttp2.Response{code: 501,
+                      reason: "Not implemented"}
   end
 
   def to_string(r=%ExHttp2.Response{}) do
