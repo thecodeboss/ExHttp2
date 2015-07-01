@@ -7,7 +7,8 @@ defmodule ExHttp2.Mixfile do
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps,
+     test_coverage: [tool: ExCoveralls]]
   end
 
   # Configuration for the OTP application
@@ -29,6 +30,7 @@ defmodule ExHttp2.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [{:timex, "~> 0.14.3"}]
+    [{:timex, "~> 0.14.3"},
+     {:excoveralls, "~> 0.3", only: [:dev, :test]}]
   end
 end
